@@ -4,7 +4,7 @@ import (
 	"bufio"
 	"fmt"
 	"github.com/PuerkitoBio/goquery"
-    "io"
+	"io"
 	"io/ioutil"
 	"net/http"
 	"os"
@@ -49,6 +49,23 @@ func main() {
 
 	os.Mkdir(IMG_PATH, 0777)
 
+	var record []string
+	var flag string
+	f, err := os.Open(IMG_PATH + "image_url.dat")
+	if err != nil {
+		fmt.Print("File " + "image_url.dat" + " open Error")
+	} else {
+		r := bufio.NewReader(f)
+		for line, e := r.ReadString('\n'); e != io.EOF; line, e = r.ReadString('\n') {
+			record = append(record, line)
+		}
+		flag = strings.Split(record[len(record)-1], ":")[0]
+	}
+	fmt.Println("Flag:" + flag)
+	fmt.Println("Flag len:" + string(len(flag)))
+	fmt.Println("Flag:" + flag)
+	f.Close()
+
 	fr, rerr := os.Open("./test_data/test.dat")
 	//fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
 	fw, werr := os.Create(IMG_PATH + "image_url.dat")
@@ -64,6 +81,35 @@ func main() {
 
 	var title, url, img_url string
 	var hasFirst bool
+
+	for _, line := range record {
+		fmt.Fprint(writer, line)
+	}
+	writer.Flush()
+
+	if len(flag) > 0 {
+		end := false
+		for line, e := reader.ReadString('\n'); e != io.EOF; line, e = reader.ReadString('\n') {
+
+			items := strings.SplitN(strings.Trim(line, "\n"), ":", 2)
+			if len(items) < 2 {
+				if end {
+					break
+				} else {
+					continue
+				}
+			}
+			prefix := items[0]
+			value := items[1]
+			//fmt.Println("Prefix:" + prefix)
+			if prefix == "Title" {
+				title = strings.TrimSpace(value)
+				if title == flag {
+					end = true
+				}
+			}
+		}
+	}
 
 	for line, e := reader.ReadString('\n'); e != io.EOF; line, e = reader.ReadString('\n') {
 
