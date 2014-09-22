@@ -49,9 +49,9 @@ func main() {
 
 	os.Mkdir(IMG_PATH, 0777)
 
-	fr, rerr := os.Open("./test_data/test.dat")
-	//fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
-	fw, werr := os.Create(IMG_PATH + "image_url.dat")
+	//fr, rerr := os.Open("./test_data/test.dat")
+	fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
+	fw, werr := os.Create(IMG_PATH+"image_url.dat")
 	if rerr != nil || werr != nil {
 		fmt.Print("File open Error")
 		return
