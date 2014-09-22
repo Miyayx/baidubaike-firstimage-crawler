@@ -35,7 +35,11 @@ func getFirstImage(title string, url string, c chan string) {
     url = strings.Split(strings.Replace(url,"picview","picture", 1),"?")[0]
     fmt.Println("Move to:"+url)
 	doc, _ := goquery.NewDocument(url)
-    img_url, _ := doc.Find("#imgPicture").Attr("src")
+    img_url, err := doc.Find("#imgPicture").Attr("src")
+    if err != nil{
+        fmt.Println("Get Image URL From "+url+" Error!")
+        return 
+    }
 	saveImage(title, img_url)
     c <- img_url
 }
@@ -72,9 +76,13 @@ func main() {
 
 		switch prefix {
 
+        case "ID":
+            fmt.Println("ID:"+value)
+
 		case "Title":
-            title = value
+            title = strings.TrimSpace(value)
             hasFirst = false
+            fmt.Println("Title:"+value)
 
 		case "FirstImage":
             hasFirst = true
@@ -106,4 +114,5 @@ func main() {
 
 		}
 	}
+    fmt.Println("END")
 }
