@@ -44,8 +44,8 @@ func main() {
 
     os.Mkdir(IMG_PATH, 0777)
 
-	//fr, rerr := os.Open("./test_data/test.dat")
-	fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
+	fr, rerr := os.Open("./test_data/test.dat")
+	//fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
 	fw, werr := os.Create(IMG_PATH+"image_url.dat")
 	if rerr != nil || werr != nil {
         fmt.Print("File open Error")
@@ -78,10 +78,17 @@ func main() {
 
 		case "FirstImage":
             hasFirst = true
-            url = PREFIX + value[3:len(value)-2]
-            c := make(chan string)
-			go getFirstImage(title, url, c)
-            img_url := <- c
+            url = value[3:len(value)-2]
+            var img_url string
+            if strings.HasPrefix(url, "http"){
+			    go saveImage(title, url)
+                img_url = url
+            }else{
+                url = PREFIX + url
+                c := make(chan string)
+			    go getFirstImage(title, url, c)
+                img_url = <- c
+            }
             fmt.Fprintln(writer, title + ":" + img_url)
             writer.Flush()
 
