@@ -9,6 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
+    "time"
 )
 
 const PREFIX = "http://baike.baidu.com"
@@ -151,6 +152,8 @@ func main() {
 				go getFirstImage(title, url, c)
 				img_url = <-c
 			}
+            time.Sleep(1000 * time.Millisecond)
+			fmt.Println("URL:" + img_url)
 			fmt.Fprintln(writer, title+":"+img_url)
 			writer.Flush()
 
@@ -163,6 +166,7 @@ func main() {
 			items := strings.SplitN(urls[0], "||", 2)
 			img_url = items[1][:len(items[1])-2]
 			//go saveImage(title, img_url)
+			fmt.Println("URL:" + img_url)
 			fmt.Fprintln(writer, title+":"+img_url)
 			writer.Flush()
 
