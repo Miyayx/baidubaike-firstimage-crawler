@@ -38,7 +38,9 @@ func getFirstImage(title string, url string, c chan string) {
 	fmt.Println("Move to:" + url)
 	doc, e := goquery.NewDocument(url)
         if e != nil{
-	        doc,_ = goquery.NewDocument(url)
+		    fmt.Println("Get Image URL From " + url + " Error!")
+                c <- ""
+		    return
         }
 	img := doc.Find("#imgPicture")
         fmt.Println(img)
