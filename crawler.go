@@ -52,6 +52,7 @@ func getFirstImage(title string, url string, c chan string) {
 		return
 	}
 	//saveImage(title, img_url)
+        time.Sleep(1000 * time.Millisecond)
 	c <- img_url
 }
 
@@ -154,7 +155,6 @@ func main() {
 				go getFirstImage(title, url, c)
 				img_url = <-c
 			}
-            time.Sleep(1000 * time.Millisecond)
 			fmt.Println("URL:" + img_url)
 			fmt.Fprintln(writer, title+":"+img_url)
 			writer.Flush()
