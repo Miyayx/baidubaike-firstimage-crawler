@@ -37,13 +37,13 @@ func getFirstImage(title string, url string, c chan string) {
 	url = strings.Split(strings.Replace(url, "picview", "picture", 1), "?")[0]
 	fmt.Println("Move to:" + url)
 	doc, e := goquery.NewDocument(url)
+	fmt.Println("Get Document")
         if e != nil{
-		    fmt.Println("Get Image URL From " + url + " Error!")
-                c <- ""
-		    return
+	        //fmt.Println("Get document From " + url + " Error!")
+	        doc,_ = goquery.NewDocument(url)
+                //c <- ""
+	        //return
         }
-	img := doc.Find("#imgPicture")
-        fmt.Println(img)
 
 	img_url, err := doc.Find("#imgPicture").Attr("src")
 	if !err {
@@ -52,7 +52,7 @@ func getFirstImage(title string, url string, c chan string) {
 		return
 	}
 	//saveImage(title, img_url)
-        time.Sleep(1000 * time.Millisecond)
+        time.Sleep(3000 * time.Millisecond)
 	c <- img_url
 }
 
@@ -153,13 +153,6 @@ func main() {
 				url = PREFIX + url
 				c := make(chan string)
 				go getFirstImage(title, url, c)
-                select {
-                    case <-c:
-				        img_url = <-c
-                        fmt.Println("done")
-                    case <-time.After(3 * time.Second):
-                        fmt.Println("timeout")
-                    }
 			}
 			fmt.Println("URL:" + img_url)
 			fmt.Fprintln(writer, title+":"+img_url)
