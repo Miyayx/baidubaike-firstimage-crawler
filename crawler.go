@@ -153,7 +153,13 @@ func main() {
 				url = PREFIX + url
 				c := make(chan string)
 				go getFirstImage(title, url, c)
-				img_url = <-c
+                select {
+                    case <-c:
+				        img_url = <-c
+                        fmt.Println("done")
+                    case <-time.After(3 * time.Second):
+                        fmt.Println("timeout")
+                    }
 			}
 			fmt.Println("URL:" + img_url)
 			fmt.Fprintln(writer, title+":"+img_url)
