@@ -36,11 +36,11 @@ func getFirstImage(title string, url string, c chan string) {
 	fmt.Println("url:" + url)
 	url = strings.Split(strings.Replace(url, "picview", "picture", 1), "?")[0]
 	fmt.Println("Move to:" + url)
-	doc, e := goquery.NewDocument("http://www.baidu.com")
-	fmt.Println(doc)
+	doc, e := goquery.NewDocument(url)
 	fmt.Println("Get Document")
-        for (e != nil){
+        if (e != nil){
 	        fmt.Println("Get document From " + url + " Error!")
+            fmt.Println(e)
 	        doc,e = goquery.NewDocument(url)
                 //c <- ""
 	        //return
@@ -82,7 +82,7 @@ func main() {
 
 	fr, rerr := os.Open("./test_data/test.dat")
 	//fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
-	fw, werr := os.Create(IMG_PATH + "image_url2.dat")
+	fw, werr := os.Create(IMG_PATH + "image_url.dat")
 	if rerr != nil || werr != nil {
 		fmt.Print("File open Error")
 		return
@@ -156,6 +156,7 @@ func main() {
 				url = PREFIX + url
 				c := make(chan string)
 				go getFirstImage(title, url, c)
+                img_url = <- c
 			}
 			fmt.Println("use FirstImage,URL:" + img_url)
 			fmt.Fprintln(writer, title+":"+img_url)
