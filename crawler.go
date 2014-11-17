@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-    "time"
+//    "time"
 )
 
 const PREFIX = "http://baike.baidu.com"
@@ -36,11 +36,12 @@ func getFirstImage(title string, url string, c chan string) {
 	fmt.Println("url:" + url)
 	url = strings.Split(strings.Replace(url, "picview", "picture", 1), "?")[0]
 	fmt.Println("Move to:" + url)
-	doc, e := goquery.NewDocument(url)
+	doc, e := goquery.NewDocument("http://www.baidu.com")
+	fmt.Println(doc)
 	fmt.Println("Get Document")
-        if e != nil{
-	        //fmt.Println("Get document From " + url + " Error!")
-	        doc,_ = goquery.NewDocument(url)
+        for (e != nil){
+	        fmt.Println("Get document From " + url + " Error!")
+	        doc,e = goquery.NewDocument(url)
                 //c <- ""
 	        //return
         }
@@ -52,7 +53,7 @@ func getFirstImage(title string, url string, c chan string) {
 		return
 	}
 	//saveImage(title, img_url)
-        time.Sleep(3000 * time.Millisecond)
+        //time.Sleep(100000 * time.Millisecond)
 	c <- img_url
 }
 
@@ -70,16 +71,18 @@ func main() {
 		for line, e := r.ReadString('\n'); e != io.EOF; line, e = r.ReadString('\n') {
 			record = append(record, line)
 		}
+                if (len(record) > 0){
 		flag = strings.Split(record[len(record)-1], ":")[0]
+        }
 	}
 	fmt.Println("Flag:" + flag)
 	fmt.Println("Flag len:" + string(len(flag)))
 	fmt.Println("Flag:" + flag)
 	f.Close()
 
-	//fr, rerr := os.Open("./test_data/test.dat")
-	fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
-	fw, werr := os.Create(IMG_PATH + "image_url.dat")
+	fr, rerr := os.Open("./test_data/test.dat")
+	//fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
+	fw, werr := os.Create(IMG_PATH + "image_url2.dat")
 	if rerr != nil || werr != nil {
 		fmt.Print("File open Error")
 		return
@@ -154,7 +157,7 @@ func main() {
 				c := make(chan string)
 				go getFirstImage(title, url, c)
 			}
-			fmt.Println("URL:" + img_url)
+			fmt.Println("use FirstImage,URL:" + img_url)
 			fmt.Fprintln(writer, title+":"+img_url)
 			writer.Flush()
 
@@ -167,7 +170,7 @@ func main() {
 			items := strings.SplitN(urls[0], "||", 2)
 			img_url = items[1][:len(items[1])-2]
 			//go saveImage(title, img_url)
-			fmt.Println("URL:" + img_url)
+			fmt.Println("use images, URL:" + img_url)
 			fmt.Fprintln(writer, title+":"+img_url)
 			writer.Flush()
 
