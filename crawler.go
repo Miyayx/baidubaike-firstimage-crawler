@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-//    "time"
+        "time"
 )
 
 const PREFIX = "http://baike.baidu.com"
@@ -53,7 +53,7 @@ func getFirstImage(title string, url string, c chan string) {
 		return
 	}
 	//saveImage(title, img_url)
-        //time.Sleep(100000 * time.Millisecond)
+        time.Sleep(100 * time.Millisecond)
 	c <- img_url
 }
 
@@ -80,8 +80,8 @@ func main() {
 	fmt.Println("Flag:" + flag)
 	f.Close()
 
-	fr, rerr := os.Open("./test_data/test.dat")
-	//fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
+	//fr, rerr := os.Open("./test_data/test.dat")
+	fr, rerr := os.Open("/home/xlore/NewBaidu/etc/baidu-dump-20140910.dat")
 	fw, werr := os.Create(IMG_PATH + "image_url.dat")
 	if rerr != nil || werr != nil {
 		fmt.Print("File open Error")
