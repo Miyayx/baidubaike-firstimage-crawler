@@ -9,7 +9,7 @@ import (
 	"net/http"
 	"os"
 	"strings"
-        "time"
+    "time"
 )
 
 const PREFIX = "http://baike.baidu.com"
@@ -35,8 +35,13 @@ func saveImage(name string, url string) {
 func getFirstImage(title string, url string, c chan string) {
 	fmt.Println("url:" + url)
 	url = strings.Split(strings.Replace(url, "picview", "picture", 1), "?")[0]
+    timeout := time.Duration(3 * time.Second)
+    client := http.Client{
+        Timeout: timeout,
+    }
 	fmt.Println("Move to:" + url)
-	doc, e := goquery.NewDocument(url)
+    res, _ := client.Get(url)
+	doc, e := goquery.NewDocumentFromResponse(res)
 	fmt.Println("Get Document")
         if (e != nil){
 	        fmt.Println("Get document From " + url + " Error!")
